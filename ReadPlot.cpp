@@ -13,14 +13,14 @@ int main()
 		string tmp;
 		int pos = 0,pos2 = 0,IT = 1;
 
-		const int MAXTN = 501, MAXWN = 21;  // ���洢1000��ʱ�䲽��20�ھ�������
-		double D[MAXTN];    // �洢Time�������ֵ
-		string WELLNAME[MAXWN];   // �洢���������ʮ���ַ�
-		double OILRATE[MAXWN][MAXTN],WATERRATE[MAXWN][MAXTN]; // ��ˮ����
-		double GASRATE[MAXWN][MAXTN],GOR[MAXWN][MAXTN];   // �����������ͱ�
-		double WOR[MAXWN][MAXTN];	// ��ˮ��
-		double WCUT[MAXWN][MAXTN];	//��ˮ��
-		double FBHP[MAXWN][MAXTN];    //����ѹ��
+		const int MAXTN = 501, MAXWN = 21;  // 最大存储1000个时间步，20口井的数据
+		double D[MAXTN];    // 存储Time后的所有值
+		string WELLNAME[MAXWN];   // 存储井名，最大十个字符
+		double OILRATE[MAXWN][MAXTN],WATERRATE[MAXWN][MAXTN]; // 油水产量
+		double GASRATE[MAXWN][MAXTN],GOR[MAXWN][MAXTN];   // 气产量，气油比
+		double WOR[MAXWN][MAXTN];	// 油水比
+		double WCUT[MAXWN][MAXTN];	//含水率
+		double FBHP[MAXWN][MAXTN];    //井底压力
 		bool FirstRead = true;
 		
 		for (int i = 1;i < MAXTN;i++)
@@ -28,11 +28,11 @@ int main()
 		for (int i = 1;i < MAXWN;i++)
 			WELLNAME[i] = "";
 
-		if(infile.fail())//�ļ���ʧ��:����0  
+		if(infile.fail())//文件打开失败:返回0  
 		{  
 		    return 0;  
 		}  
-		else//�ļ�����  
+		else//文件存在  
 		{  
 			streampos pos = infile.tellg();
 		    while(getline(infile,tmp,'\n') && !infile.eof() )  
@@ -48,15 +48,15 @@ int main()
 						string WELL;
 						
 						//cout << tmp << "\n";
-						infile.seekg(pos-pos2,ios::cur);
+						infile.seekg(pos-pos2,ios::cur);	//读取指针移动到字符Time前
 						infile >> c1 >> c2 >> DTIME;
-						getline(infile,tmp,'\n');
+						getline(infile,tmp,'\n');	//将读取指针移动到本行末尾
 						infile >> IWELL >> WELL >> a >> c3 >> c4 >> c5 >> c6
 							>> ORA>>WR>>GR>>G>>WO>>WC>>FB;
 
-						if (IT == 1 && FirstRead)// ����ǵ�һ��ʱ�䲽����
+						if (IT == 1 && FirstRead)// 如果是第一个时间步数据
 		    				{
-								D[IT] = DTIME;
+							D[IT] = DTIME;
 		    					WELLNAME[IWELL] = WELL;
 		    					OILRATE[IWELL][IT] = ORA;
 		    					WATERRATE[IWELL][IT] = WR;
@@ -65,9 +65,9 @@ int main()
 		    					WOR[IWELL][IT] = WO;
 		    					WCUT[IWELL][IT] = WC;
 		    					FBHP[IWELL][IT] = FB;
-								FirstRead = false;
+							FirstRead = false;
 							}
-						else if (D[IT] == DTIME)		// �Ƿ���ͬ��ʱ�䲽��ͬ�ľ�����
+						else if (D[IT] == DTIME)		// 是否相同的时间步不同的井数据
 		    				{
 		    					WELLNAME[IWELL] = WELL;
 		    					OILRATE[IWELL][IT] = ORA;
@@ -78,9 +78,9 @@ int main()
 		    					WCUT[IWELL][IT] = WC;
 		    					FBHP[IWELL][IT] = FB;
 							}
-						else    // ��һ��ʱ�䲽��һ�ھ�����
+						else    // 下一个时间步第一口井数据
 		    				{	
-								IT = IT + 1;
+							IT = IT + 1;
 		    					D[IT] = DTIME;
 		    					WELLNAME[IWELL] = WELL;
 		    					OILRATE[IWELL][IT] = ORA;
@@ -96,7 +96,7 @@ int main()
 		    }  
 		    infile.close();  
 
-			// �ļ����
+			// 文件输出
 			ofstream outfile;
 			outfile.open ("plot.dat",ios::trunc);
 
