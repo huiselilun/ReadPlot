@@ -3,7 +3,6 @@
 #include <string>  
 #include <cctype>
 #include <iomanip>
-//#include "discpp.h"
 
 using namespace std;  
 
@@ -139,67 +138,21 @@ int main()
 				outM << MXWN << "\n";
 				for (int i = 1;i <= MXWN; i++)
 					outM << WELLNAME[i] << "\n";
+				outM.close();
+
+				ofstream outM2;
+				outM2.open("MatLabPlot2.dat",ios::trunc);
 				for (int I = 1;I <= MXWN;I++)		//按照井顺序，然后按照时间顺序输出值
 				{
 					for (int J = 1;J <= MXTN;J++)
 						{
-							outM << D[J] << setw(15) <<OILRATE[I][J]<< setw(15) <<WATERRATE[I][J]<< setw(15) <<GASRATE[I][J]
+							outM2 << D[J] << setw(15) <<OILRATE[I][J]<< setw(15) <<WATERRATE[I][J]<< setw(15) <<GASRATE[I][J]
 								<< setw(15) <<GOR[I][J]<< setw(15) <<WOR[I][J]<< setw(15) <<WCUT[I][J]<< setw(15) <<FBHP[I][J] << "\n";
 					}
 				}
-				outM.close();
+				outM2.close();
 
-				/*// plot curve with dislin
-				double *x = new double[MXTN];
-				double *y = new double[MXWN];
-				int ic;
-
-				for (int i = 0;i < MXTN; i++)
-					x[i] = D[i+1];
-				for (int i = 0;i < MXTN; i++)
-					y[i] = OILRATE[1][i+1];
-
-				Dislin g;
-
-				g.metafl ("cons");
-				g.scrmod ("revers");
-				g.disini ();
-				g.pagera ();
-				g.complx ();
-				g.axspos (450, 1800);
-				g.axslen (2200, 1200);
-
-				g.name   ("Time", "x");
-				g.name   ("OilRate", "y");
-
-				g.labdig (-1, "x");
-				g.ticks  (9, "x");
-				g.ticks  (10, "y");
-
-				g.titlin ("OilRate of Well 1", 1);
-
-				ic=g.intrgb (0.95,0.95,0.95);
-				g.axsbgd (ic);
-
-				//g.graf   (0.0, 360.0, 0.0, 90.0, -1.0, 1.0, -1.0, 0.5);
-				g.setrgb (0.7, 0.7, 0.7);
-				g.grid   (1, 1);
-
-				g.color  ("fore");
-				g.height (50);
-				g.title  ();
-
-				g.color  ("red");
-				g.curve  (x, y, MXTN);
-				g.disfin ();
-
-				for (int i = 0;i< MXTN ;i++)
-					cout << x[i] << "   "<<y[i]<< "\n";
-				cin >> ic;
-
-				delete []x;
-				delete []y;
-				*/
+				
 		    return 0;  
 		} 
 }
